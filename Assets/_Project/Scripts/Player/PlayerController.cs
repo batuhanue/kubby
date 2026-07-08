@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour
         ReadMovementInput();
         CheckGround();
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (KupikInput.JumpPressedThisFrame() && isGrounded)
         {
             Jump();
         }
@@ -45,10 +45,15 @@ public class PlayerController : MonoBehaviour
 
     private void ReadMovementInput()
     {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
+        // Klavye (editor) + ekran joystick (Android) birlesik girdi.
+        Vector2 input = KupikInput.Move;
 
-        moveInput = new Vector3(horizontal, 0f, vertical).normalized;
+        moveInput = new Vector3(input.x, 0f, input.y);
+
+        if (moveInput.sqrMagnitude > 1f)
+        {
+            moveInput.Normalize();
+        }
 
         if (mainCamera == null)
         {
